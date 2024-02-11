@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './App.css';
-import "bootstrap-icons/font/bootstrap-icons.css";
 import TextInput from './Fields Components/TextInput';
 import TextAreaField from './Fields Components/TextAreaField';
 import DropdownField from './Fields Components/DropdownField';
@@ -29,7 +28,6 @@ const App = () => {
   };
 
   const handleInputChange = (index, name, value) => {
-    //const { name, value } = event.target;
     const updatedFields = [...formFields];
     updatedFields[index][name] = value;
     setFormFields(updatedFields);
@@ -39,54 +37,31 @@ const App = () => {
     switch (field.type) {
       case 'text':
         return (
-          <TextInput
-            key={index}
-            label= {field.label}
-            value={field.value}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}
-          />
-        );
+          <TextInput key={index} label= {field.label} value={field.value}
+            onChange={event => handleInputChange(index, 'value', event.target.value)} /> );
+              
       case 'textarea':
         return (
-          <TextAreaField
-            key={index}
-            label={field.label}
-            value={field.value}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}
-          />
-        );
+          <TextAreaField key={index} label={field.label} value={field.value}
+            onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+
       case 'dropdown':
         return (
-          <DropdownField
-            key={index}
-            label={field.label}
-            value={field.value}
-            options={field.options}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}
-          />
-        );
+          <DropdownField key={index} label={field.label} value={field.value} options={field.options}
+       onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+
       case 'checkbox':
         return (
-          <CheckboxField
-            key={index}
-            label={field.label}
-            value={field.value}
-            checked={field.value}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}
-          />
-        );
+          <CheckboxField key={index} label={field.label} value={field.value} checked={field.value}
+            onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+
       case 'radio':
         return (
-          <RadioButton
-            key={index}
-            label={field.label}
-            checked={field.value === field.label}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}
-          />
-        );
+          <RadioButton key={index} label={field.label} checked={field.value === field.label}
+            onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+
       default:
         return null;
-    
     }
   };
 
@@ -114,6 +89,7 @@ const App = () => {
         </select>
         <button onClick={addFormField} className='btn btn-dark'>Add Field</button>
       </div>
+
       { formFields.length > 0  ? < form onSubmit={handleSubmit} className='form'>
         {formFields.map((field, index) => (
           <div key={index} className='mb-3 d-flex align-items-center justify-content-center'>
@@ -121,7 +97,6 @@ const App = () => {
             {renderFormField(field, index)}
             <button type='submit' className='ms-3 del-icon btn btn-outline-danger' onClick={() => removeFormField(index)}>remove</button>
           </div>
-          
         ))}
         
         <button type="submit" className='btn btn-dark mt-4'>Submit</button>
