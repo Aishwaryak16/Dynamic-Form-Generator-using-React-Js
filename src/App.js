@@ -9,6 +9,7 @@ import RadioButton from './Fields Components/RadioButton';
 const App = () => {
   const [formFields, setFormFields] = useState([]);
   const [selectedFieldType, setSelectedFieldType] = useState('text');
+  const [submitted, setSubmitted] = useState(false);
 
   const addFormField = (e) => {
     const newField = {
@@ -38,42 +39,64 @@ const App = () => {
       case 'text':
         return (
           <TextInput key={index} label= {field.label} value={field.value}
-            onChange={event => handleInputChange(index, 'value', event.target.value)} /> );
-              
+            onChange={event => handleInputChange(index, 'value', event.target.value)}
+          />
+        );
       case 'textarea':
         return (
           <TextAreaField key={index} label={field.label} value={field.value}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+            onChange={event => handleInputChange(index, 'value', event.target.value)}/>
+        );
 
       case 'dropdown':
         return (
           <DropdownField key={index} label={field.label} value={field.value} options={field.options}
-       onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+       onChange={event => handleInputChange(index, 'value', event.target.value)}/>
+        );
 
       case 'checkbox':
         return (
           <CheckboxField key={index} label={field.label} value={field.value} checked={field.value}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+            onChange={event => handleInputChange(index, 'value', event.target.value)}/>
+        );
 
       case 'radio':
         return (
           <RadioButton key={index} label={field.label} checked={field.value === field.label}
-            onChange={event => handleInputChange(index, 'value', event.target.value)}/> );
+            onChange={event => handleInputChange(index, 'value', event.target.value)}/>
+        );
 
       default:
         return null;
+    
     }
   };
 
+  //function to handle form submit
   const handleSubmit = event => {
     event.preventDefault();
     // Form submission logic
     console.log('Form submitted:', formFields);
-    //setSubmitted(true);
+    setSubmitted(true);
 
     alert ('Form Submitted', formFields);
     setFormFields([])
   };
+
+  //function to download form data
+  const downloadFormData = () => {
+    const json = JSON.stringify(formFields, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'form_data.json');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  
 
   return (
     <div className='App'>
@@ -90,6 +113,7 @@ const App = () => {
         <button onClick={addFormField} className='btn btn-dark'>Add Field</button>
       </div>
 
+
       { formFields.length > 0  ? < form onSubmit={handleSubmit} className='form'>
         {formFields.map((field, index) => (
           <div key={index} className='mb-3 d-flex align-items-center justify-content-center'>
@@ -97,10 +121,13 @@ const App = () => {
             {renderFormField(field, index)}
             <button type='submit' className='ms-3 del-icon btn btn-outline-danger' onClick={() => removeFormField(index)}>remove</button>
           </div>
+          
         ))}
+
         
         <button type="submit" className='btn btn-dark mt-4'>Submit</button>
-      </form> : <div className='form'> <p className='alert-mg'>Please add the form fields by selecting fields from the above dropdown</p> </div> }
+      </form> : <div className='form'> <p className='alert-mg'>{submitted ? 'Thank you for submitting the form!' : 'Please add the form fields by selecting fields from the above dropdown'}</p> </div>  }
+      {submitted && <button onClick={downloadFormData} className='btn btn-primary'>Download Form Data</button> }
     </div>
   );
 };
